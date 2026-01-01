@@ -9,10 +9,12 @@ import Register from './pages/Register';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminCourseList from './pages/admin/AdminCourseList';
 import CreateCourse from './pages/admin/CreateCourse';
 
 // Instructor Pages
 import InstructorDashboard from './pages/instructor/InstructorDashboard';
+import AvailableCourses from './pages/instructor/AvailableCourses';
 import ManageCourse from './pages/instructor/ManageCourse';
 
 // Student Pages
@@ -63,6 +65,14 @@ function App() {
             }
           />
           <Route
+            path="/admin/courses"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminCourseList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/courses/new"
             element={
               <ProtectedRoute allowedRoles={['admin']}>
@@ -85,6 +95,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['instructor']}>
                 <InstructorDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/instructor/available"
+            element={
+              <ProtectedRoute allowedRoles={['instructor']}>
+                <AvailableCourses />
               </ProtectedRoute>
             }
           />

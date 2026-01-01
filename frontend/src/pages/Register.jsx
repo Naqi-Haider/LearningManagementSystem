@@ -70,7 +70,7 @@ const Register = () => {
                 <input
                   type="text"
                   name="name"
-                  placeholder="John Doe"
+                  placeholder="Your Name"
                   className="input"
                   value={formData.name}
                   onChange={handleChange}
