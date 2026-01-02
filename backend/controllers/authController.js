@@ -1,8 +1,7 @@
 const User = require('../models/User');
 
-// @desc    Register new user
-// @route   POST /api/auth/register
-// @access  Public
+//Create Request: NEW USER
+//POST api: /auth/register
 const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -25,9 +24,8 @@ const register = async (req, res) => {
   }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
+//Read Request: SINGLE USER
+//POST api: /auth/login
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -54,9 +52,8 @@ const login = async (req, res) => {
   }
 };
 
-// @desc    Get user profile
-// @route   GET /api/auth/profile
-// @access  Private
+//Read Request: SINGLE USER
+//GET api: /auth/profile
 const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');
@@ -66,9 +63,8 @@ const getProfile = async (req, res) => {
   }
 };
 
-// @desc    Update user profile
-// @route   PUT /api/auth/profile
-// @access  Private
+//Update Request: SINGLE USER
+//PUT api: /auth/profile
 const updateProfile = async (req, res) => {
   try {
     const { name } = req.body;

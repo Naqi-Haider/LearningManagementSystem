@@ -1,9 +1,7 @@
 const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
 
-// @desc    Get all courses
-// @route   GET /api/courses
-// @access  Private
+//Read Request:
 const getCourses = async (req, res) => {
   try {
     const courses = await Course.find().populate('instructors', 'name email');
@@ -13,9 +11,8 @@ const getCourses = async (req, res) => {
   }
 };
 
-// @desc    Get single course
-// @route   GET /api/courses/:id
-// @access  Private
+//Read Request: SINGLE COURSE
+//GET api: /courses/:id
 const getCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id)
@@ -33,9 +30,8 @@ const getCourse = async (req, res) => {
   }
 };
 
-// @desc    Create new course
-// @route   POST /api/courses
-// @access  Admin only
+//Create Request: NEW COURSE
+//POST api: /courses
 const createCourse = async (req, res) => {
   try {
     const { title, description, code, instructorLimit } = req.body;
@@ -58,9 +54,8 @@ const createCourse = async (req, res) => {
   }
 };
 
-// @desc    Update course
-// @route   PUT /api/courses/:id
-// @access  Admin only
+//Update Request:
+//PUT api: /courses/:id
 const updateCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
@@ -81,9 +76,8 @@ const updateCourse = async (req, res) => {
   }
 };
 
-// @desc    Delete course
-// @route   DELETE /api/courses/:id
-// @access  Admin only
+//Delete Request:
+//DELETE api: /courses/:id
 const deleteCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
@@ -99,9 +93,8 @@ const deleteCourse = async (req, res) => {
   }
 };
 
-// @desc    Instructor joins course
-// @route   PUT /api/courses/:id/join
-// @access  Instructor only
+//Instructor joins course
+//PUT api: /courses/:id/join
 const joinCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
@@ -145,9 +138,9 @@ const joinCourse = async (req, res) => {
   }
 };
 
-// @desc    Student enrolls in course with specific instructor
-// @route   PUT /api/courses/:id/enroll
-// @access  Student only
+
+//Student enrolls in course with specific instructor
+//PUT api: /courses/:id/enroll
 const enrollCourse = async (req, res) => {
   try {
     const { instructorId } = req.body;

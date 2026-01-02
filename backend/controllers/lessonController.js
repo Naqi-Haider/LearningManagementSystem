@@ -1,9 +1,7 @@
 const Lesson = require('../models/Lesson');
 const Enrollment = require('../models/Enrollment');
 
-// @desc    Get lessons for a course (optionally filter by instructor)
-// @route   GET /api/lessons/:courseId?instructor=instructorId
-// @access  Private
+///Read Request:
 const getLessons = async (req, res) => {
   try {
     const query = { courseId: req.params.courseId };
@@ -22,9 +20,7 @@ const getLessons = async (req, res) => {
   }
 };
 
-// @desc    Create new lesson
-// @route   POST /api/lessons
-// @access  Instructor only
+//Create Request:
 const createLesson = async (req, res) => {
   try {
     const { courseId, title, content, sequenceOrder } = req.body;
@@ -43,9 +39,7 @@ const createLesson = async (req, res) => {
   }
 };
 
-// @desc    Update lesson
-// @route   PUT /api/lessons/:id
-// @access  Instructor (owner only)
+//Update Request:
 const updateLesson = async (req, res) => {
   try {
     const lesson = await Lesson.findById(req.params.id);
@@ -71,9 +65,7 @@ const updateLesson = async (req, res) => {
   }
 };
 
-// @desc    Delete lesson
-// @route   DELETE /api/lessons/:id
-// @access  Instructor (owner only)
+//Delete Request:
 const deleteLesson = async (req, res) => {
   try {
     const lesson = await Lesson.findById(req.params.id);
@@ -94,9 +86,8 @@ const deleteLesson = async (req, res) => {
   }
 };
 
-// @desc    Mark lesson as complete
-// @route   PUT /api/lessons/:id/complete
-// @access  Student
+//Complete Request:
+//PUT api: /lessons/:id/complete
 const completeLesson = async (req, res) => {
   try {
     const { courseId } = req.body;

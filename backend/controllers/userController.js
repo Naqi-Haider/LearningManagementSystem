@@ -1,8 +1,6 @@
 const User = require('../models/User');
 
-// @desc    Get all users (for admin)
-// @route   GET /api/users
-// @access  Private/Admin
+//Create Request:
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password');
@@ -12,9 +10,7 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// @desc    Get users by role
-// @route   GET /api/users/role/:role
-// @access  Private/Admin
+//Read Request:
 const getUsersByRole = async (req, res) => {
   try {
     const { role } = req.params;
@@ -25,9 +21,7 @@ const getUsersByRole = async (req, res) => {
   }
 };
 
-// @desc    Delete user
-// @route   DELETE /api/users/:id
-// @access  Private/Admin
+//Delete Request:
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);

@@ -1,9 +1,7 @@
 const Enrollment = require('../models/Enrollment');
 const Course = require('../models/Course');
 
-// @desc    Get student enrollments
-// @route   GET /api/enrollments
-// @access  Student only
+//Read Request: ALL ENROLLMENTS
 const getEnrollments = async (req, res) => {
   try {
     const enrollments = await Enrollment.find({ studentId: req.user._id })
@@ -15,9 +13,7 @@ const getEnrollments = async (req, res) => {
   }
 };
 
-// @desc    Get enrollment details
-// @route   GET /api/enrollments/:courseId
-// @access  Student only
+//Read Request: SINGLE ENROLLMENT
 const getEnrollment = async (req, res) => {
   try {
     const enrollment = await Enrollment.findOne({
@@ -38,9 +34,7 @@ const getEnrollment = async (req, res) => {
   }
 };
 
-// @desc    Get students enrolled with a specific instructor for a course
-// @route   GET /api/enrollments/course/:courseId/instructor/:instructorId
-// @access  Instructor only
+//Read Request: ALL STUDENTS ENROLLED WITH A SPECIFIC INSTRUCTOR FOR A COURSE
 const getStudentsByInstructor = async (req, res) => {
   try {
     const { courseId, instructorId } = req.params;

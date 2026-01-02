@@ -39,9 +39,9 @@ const createAssignment = async (req, res) => {
   }
 };
 
-// @desc    Update assignment
-// @route   PUT /api/assignments/:id
-// @access  Instructor only
+
+//Update Request:
+//PUT api: /assignments/:id
 const updateAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
@@ -62,9 +62,8 @@ const updateAssignment = async (req, res) => {
   }
 };
 
-// @desc    Delete assignment
-// @route   DELETE /api/assignments/:id
-// @access  Instructor only
+//Delete Request:
+//DELETE api: /assignments/:id
 const deleteAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
@@ -80,9 +79,8 @@ const deleteAssignment = async (req, res) => {
   }
 };
 
-// @desc    Submit assignment
-// @route   POST /api/assignments/:id/submit
-// @access  Student only
+//Create Request:
+//POST api: /assignments/:id/submit
 const submitAssignment = async (req, res) => {
   try {
     const { content } = req.body;
@@ -108,9 +106,8 @@ const submitAssignment = async (req, res) => {
   }
 };
 
-// @desc    Get submissions for an assignment
-// @route   GET /api/assignments/:id/submissions
-// @access  Instructor only
+//Read Request:
+//GET api: /assignments/:id/submissions
 const getSubmissions = async (req, res) => {
   try {
     const submissions = await Submission.find({ assignmentId: req.params.id })
