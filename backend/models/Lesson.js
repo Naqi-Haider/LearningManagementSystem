@@ -6,6 +6,11 @@ const lessonSchema = new mongoose.Schema({
     ref: 'Course',
     required: true,
   },
+  instructor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   title: {
     type: String,
     required: true,

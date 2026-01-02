@@ -11,16 +11,21 @@ import Register from './pages/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCourseList from './pages/admin/AdminCourseList';
 import CreateCourse from './pages/admin/CreateCourse';
+import AdminProfile from './pages/admin/AdminProfile';
+import AdminUserPanel from './pages/admin/AdminUserPanel';
+import AdminCourseDetail from './pages/admin/AdminCourseDetail';
 
 // Instructor Pages
 import InstructorDashboard from './pages/instructor/InstructorDashboard';
 import AvailableCourses from './pages/instructor/AvailableCourses';
 import ManageCourse from './pages/instructor/ManageCourse';
+import InstructorProfile from './pages/instructor/InstructorProfile';
 
 // Student Pages
 import StudentDashboard from './pages/student/StudentDashboard';
 import CourseView from './pages/student/CourseView';
 import StudentProfile from './pages/student/StudentProfile';
+import AssignmentDetail from './pages/student/AssignmentDetail';
 
 const RoleRedirect = () => {
   const { user, loading } = useAuth();
@@ -52,6 +57,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/login/:role" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<RoleRedirect />} />
 
@@ -84,7 +90,23 @@ function App() {
             path="/admin/courses/:id"
             element={
               <ProtectedRoute allowedRoles={['admin']}>
-                <ManageCourse />
+                <AdminCourseDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/profile"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminUserPanel />
               </ProtectedRoute>
             }
           />
@@ -114,6 +136,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/instructor/profile"
+            element={
+              <ProtectedRoute allowedRoles={['instructor']}>
+                <InstructorProfile />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Student Routes */}
           <Route
@@ -129,6 +159,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['student']}>
                 <CourseView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/courses/:courseId/assignments/:assignmentId"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <AssignmentDetail />
               </ProtectedRoute>
             }
           />

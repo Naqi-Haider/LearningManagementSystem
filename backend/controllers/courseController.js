@@ -117,33 +117,52 @@ const joinCourse = async (req, res) => {
       return res.status(400).json({ message: 'Capacity Reached' });
     }
 
+    // Generate unique section v1-v10
+    const usedSections = course.instructorSections?.map(s => s.section) || [];
+    const allSections = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10'];
+    const availableSections = allSections.filter(s => !usedSections.includes(s));
+    const randomSection = availableSections[Math.floor(Math.random() * availableSections.length)] || `v${course.instructors.length + 1}`;
+
     course.instructors.push(req.user._id);
+    course.instructorSections = course.instructorSections || [];
+    course.instructorSections.push({ instructor: req.user._id, section: randomSection });
     await course.save();
 
-    res.json(course);
+    res.json({ ...course.toObject(), assignedSection: randomSection });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Student enrolls in course
+// @desc    Student enrolls in course with specific instructor
 // @route   PUT /api/courses/:id/enroll
 // @access  Student only
 const enrollCourse = async (req, res) => {
   try {
+    const { instructorId } = req.body;
     const course = await Course.findById(req.params.id);
 
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
 
+    if (!instructorId) {
+      return res.status(400).json({ message: 'Please select an instructor' });
+    }
+
+    // Check if the instructor is actually teaching this course
+    if (!course.instructors.includes(instructorId)) {
+      return res.status(400).json({ message: 'Invalid instructor for this course' });
+    }
+
     const existingEnrollment = await Enrollment.findOne({
       studentId: req.user._id,
       courseId: req.params.id,
+      instructorId: instructorId,
     });
 
     if (existingEnrollment) {
-      return res.status(400).json({ message: 'Already enrolled in this course' });
+      return res.status(400).json({ message: 'Already enrolled with this instructor' });
     }
 
     course.students.push(req.user._id);
@@ -152,6 +171,7 @@ const enrollCourse = async (req, res) => {
     const enrollment = await Enrollment.create({
       studentId: req.user._id,
       courseId: req.params.id,
+      instructorId: instructorId,
     });
 
     res.json({ course, enrollment });

@@ -1,14 +1,24 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
+  const { role } = useParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Determine heading based on role parameter
+  const roleConfig = {
+    admin: { title: 'Admin Login', subtitle: 'Access the administration panel' },
+    instructor: { title: 'Instructor Login', subtitle: 'Manage your courses and students' },
+    student: { title: 'Student Login', subtitle: 'Access your enrolled courses' },
+  };
+
+  const config = role && roleConfig[role] ? roleConfig[role] : { title: 'Welcome Back', subtitle: 'Sign in to your account' };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,6 +27,16 @@ const Login = () => {
 
     try {
       const data = await login({ email, password });
+
+      // If a specific role was requested via URL, validate it matches
+      if (role && data.role !== role) {
+        // Logout the user since wrong role
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setError(`Invalid credentials. This login is for ${role}s only.`);
+        setLoading(false);
+        return;
+      }
 
       if (data.role === 'admin') {
         navigate('/admin');
@@ -45,8 +65,8 @@ const Login = () => {
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="card p-8">
-            <h2 className="text-2xl font-bold text-center text-gray-900 mb-2">Welcome Back</h2>
-            <p className="text-center text-gray-500 mb-6">Sign in to your account</p>
+            <h2 className="text-2xl font-bold text-center text-gray-900 mb-2">{config.title}</h2>
+            <p className="text-center text-gray-500 mb-6">{config.subtitle}</p>
 
             {error && (
               <div className="alert alert-error mb-4">
@@ -114,7 +134,7 @@ const Login = () => {
 
       {/* Footer */}
       <footer className="bg-gray-900 py-4 text-center">
-        <p className="text-sm text-gray-400">© 2024 Learning Management System</p>
+        <p className="text-sm text-gray-400">© 2026 Learning Management System</p>
       </footer>
     </div>
   );

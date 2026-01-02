@@ -11,6 +11,11 @@ const enrollmentSchema = new mongoose.Schema({
     ref: 'Course',
     required: true,
   },
+  instructorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   completedLessons: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lesson',

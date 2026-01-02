@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import MainLayout from '../../components/MainLayout';
 import { courseService, lessonService, assignmentService, enrollmentService } from '../../services/api';
 
@@ -18,17 +18,21 @@ const CourseView = () => {
 
   const fetchCourseData = async () => {
     try {
-      const [courseRes, lessonsRes, assignmentsRes, enrollmentRes] = await Promise.all([
+      // First get enrollment to know which instructor the student is enrolled with
+      const enrollmentRes = await enrollmentService.getEnrollment(id);
+      setEnrollment(enrollmentRes.data);
+
+      const instructorId = enrollmentRes.data?.instructorId?._id || enrollmentRes.data?.instructorId;
+
+      const [courseRes, lessonsRes, assignmentsRes] = await Promise.all([
         courseService.getCourse(id),
-        lessonService.getLessons(id),
-        assignmentService.getAssignments(id),
-        enrollmentService.getEnrollment(id),
+        lessonService.getLessons(id, instructorId),
+        assignmentService.getAssignments(id, instructorId),
       ]);
 
       setCourse(courseRes.data);
       setLessons(lessonsRes.data);
       setAssignments(assignmentsRes.data);
-      setEnrollment(enrollmentRes.data);
 
       if (lessonsRes.data.length > 0) {
         setSelectedLesson(lessonsRes.data[0]);
@@ -70,6 +74,9 @@ const CourseView = () => {
           <p className="text-xs text-gray-500 font-mono">{course?.code}</p>
           <h1 className="text-2xl font-bold text-gray-900">{course?.title}</h1>
           <p className="text-sm text-gray-500 mt-1">{course?.description}</p>
+          <p className="text-sm text-blue-600 mt-2">
+            Instructor: {enrollment?.instructorId?.name || 'Unknown'}
+          </p>
           <div className="mt-4 max-w-md">
             <div className="flex justify-between text-xs mb-1">
               <span className="text-gray-500">Progress</span>
@@ -120,23 +127,27 @@ const CourseView = () => {
                 <h3 className="font-semibold text-sm text-gray-900">Lessons</h3>
               </div>
               <div className="p-2">
-                {lessons.map((lesson) => (
-                  <button
-                    key={lesson._id}
-                    onClick={() => setSelectedLesson(lesson)}
-                    className={`w-full text-left p-2 rounded text-sm flex items-center gap-2 ${selectedLesson?._id === lesson._id
+                {lessons.length === 0 ? (
+                  <p className="text-xs text-gray-500 p-2">No lessons yet.</p>
+                ) : (
+                  lessons.map((lesson) => (
+                    <button
+                      key={lesson._id}
+                      onClick={() => setSelectedLesson(lesson)}
+                      className={`w-full text-left p-2 rounded text-sm flex items-center gap-2 ${selectedLesson?._id === lesson._id
                         ? 'bg-primary-600 text-white'
                         : 'hover:bg-gray-100 text-gray-700'
-                      }`}
-                  >
-                    {isLessonComplete(lesson._id) && (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                    <span>{lesson.sequenceOrder}. {lesson.title}</span>
-                  </button>
-                ))}
+                        }`}
+                    >
+                      {isLessonComplete(lesson._id) && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                      <span>{lesson.sequenceOrder}. {lesson.title}</span>
+                    </button>
+                  ))
+                )}
               </div>
             </div>
 
@@ -151,12 +162,16 @@ const CourseView = () => {
                 ) : (
                   <div className="space-y-2">
                     {assignments.map((assignment) => (
-                      <div key={assignment._id} className="p-2 bg-gray-50 rounded">
+                      <Link
+                        key={assignment._id}
+                        to={`/student/courses/${id}/assignments/${assignment._id}`}
+                        className="block p-2 bg-gray-50 rounded hover:bg-gray-100 transition-colors"
+                      >
                         <p className="font-medium text-sm text-gray-900">{assignment.title}</p>
                         <p className="text-xs text-gray-500">
                           Due: {new Date(assignment.dueDate).toLocaleDateString()}
                         </p>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}

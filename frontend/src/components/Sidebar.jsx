@@ -10,11 +10,14 @@ const Sidebar = () => {
   const adminLinks = [
     { path: '/admin', label: 'Dashboard' },
     { path: '/admin/courses', label: 'Courses' },
+    { path: '/admin/users', label: 'Users' },
+    { path: '/admin/profile', label: 'Profile' },
   ];
 
   const instructorLinks = [
     { path: '/instructor', label: 'Dashboard' },
     { path: '/instructor/available', label: 'Available Courses' },
+    { path: '/instructor/profile', label: 'Profile' },
   ];
 
   const studentLinks = [
@@ -36,8 +39,8 @@ const Sidebar = () => {
               <Link
                 to={link.path}
                 className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive(link.path)
-                    ? 'bg-white text-gray-900'
-                    : 'text-gray-300 hover:bg-gray-800'
+                  ? 'bg-white text-gray-900'
+                  : 'text-gray-300 hover:bg-gray-800'
                   }`}
               >
                 {link.label}

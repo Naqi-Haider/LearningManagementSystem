@@ -88,8 +88,9 @@ const updateProfile = async (req, res) => {
 
     if (name) user.name = name;
 
-    // Handle profile image upload
+    // Handle profile image upload from Cloudinary
     if (req.file) {
+      // multer-storage-cloudinary provides the URL in req.file.path
       user.profileImage = req.file.path;
     }
 
@@ -103,6 +104,7 @@ const updateProfile = async (req, res) => {
       profileImage: user.profileImage,
     });
   } catch (error) {
+    console.error('Profile update error:', error);
     res.status(500).json({ message: error.message });
   }
 };

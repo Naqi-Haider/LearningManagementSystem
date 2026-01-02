@@ -31,12 +31,15 @@ export const courseService = {
   updateCourse: (id, courseData) => api.put(`/courses/${id}`, courseData),
   deleteCourse: (id) => api.delete(`/courses/${id}`),
   joinCourse: (id) => api.put(`/courses/${id}/join`),
-  enrollCourse: (id) => api.put(`/courses/${id}/enroll`),
+  enrollCourse: (id, instructorId) => api.put(`/courses/${id}/enroll`, { instructorId }),
 };
 
 // Lesson services
 export const lessonService = {
-  getLessons: (courseId) => api.get(`/lessons/${courseId}`),
+  getLessons: (courseId, instructorId) => {
+    const params = instructorId ? { instructor: instructorId } : {};
+    return api.get(`/lessons/${courseId}`, { params });
+  },
   createLesson: (lessonData) => api.post('/lessons', lessonData),
   updateLesson: (id, lessonData) => api.put(`/lessons/${id}`, lessonData),
   deleteLesson: (id) => api.delete(`/lessons/${id}`),
@@ -45,7 +48,10 @@ export const lessonService = {
 
 // Assignment services
 export const assignmentService = {
-  getAssignments: (courseId) => api.get(`/assignments/${courseId}`),
+  getAssignments: (courseId, instructorId) => {
+    const params = instructorId ? { instructor: instructorId } : {};
+    return api.get(`/assignments/${courseId}`, { params });
+  },
   createAssignment: (assignmentData) => api.post('/assignments', assignmentData),
   updateAssignment: (id, assignmentData) => api.put(`/assignments/${id}`, assignmentData),
   deleteAssignment: (id) => api.delete(`/assignments/${id}`),
@@ -57,6 +63,14 @@ export const assignmentService = {
 export const enrollmentService = {
   getEnrollments: () => api.get('/enrollments'),
   getEnrollment: (courseId) => api.get(`/enrollments/${courseId}`),
+  getStudentsByInstructor: (courseId, instructorId) => api.get(`/enrollments/course/${courseId}/instructor/${instructorId}`),
+};
+
+// User services (admin)
+export const userService = {
+  getAllUsers: () => api.get('/users'),
+  getUsersByRole: (role) => api.get(`/users/role/${role}`),
+  deleteUser: (id) => api.delete(`/users/${id}`),
 };
 
 export default api;

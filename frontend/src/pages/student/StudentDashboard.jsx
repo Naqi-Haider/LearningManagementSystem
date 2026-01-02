@@ -8,6 +8,8 @@ const StudentDashboard = () => {
   const [upcomingAssignments, setUpcomingAssignments] = useState([]);
   const [availableCourses, setAvailableCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [enrollModal, setEnrollModal] = useState(null);
+  const [selectedInstructor, setSelectedInstructor] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -23,13 +25,13 @@ const StudentDashboard = () => {
       setEnrollments(enrollmentsRes.data);
 
       const enrolledIds = enrollmentsRes.data.map(e => e.courseId._id);
-      setAvailableCourses(coursesRes.data.filter(c => !enrolledIds.includes(c._id)));
+      setAvailableCourses(coursesRes.data.filter(c => !enrolledIds.includes(c._id) && c.instructors?.length > 0));
 
       const assignments = [];
       for (const enrollment of enrollmentsRes.data) {
         try {
-          const { data } = await assignmentService.getAssignments(enrollment.courseId._id);
-          assignments.push(...data.map(a => ({ ...a, course: enrollment.courseId })));
+          const { data } = await assignmentService.getAssignments(enrollment.courseId._id, enrollment.instructorId?._id);
+          assignments.push(...data.map(a => ({ ...a, course: enrollment.courseId, instructor: enrollment.instructorId })));
         } catch (err) {
           console.error('Error fetching assignments:', err);
         }
@@ -44,9 +46,20 @@ const StudentDashboard = () => {
     }
   };
 
-  const handleEnroll = async (courseId) => {
+  const handleEnrollClick = (course) => {
+    setEnrollModal(course);
+    setSelectedInstructor(course.instructors[0]?._id || '');
+  };
+
+  const handleEnroll = async () => {
+    if (!selectedInstructor) {
+      alert('Please select an instructor');
+      return;
+    }
     try {
-      await courseService.enrollCourse(courseId);
+      await courseService.enrollCourse(enrollModal._id, selectedInstructor);
+      setEnrollModal(null);
+      setSelectedInstructor('');
       fetchData();
     } catch (error) {
       alert(error.response?.data?.message || 'Failed to enroll');
@@ -97,6 +110,9 @@ const StudentDashboard = () => {
                   <div key={enrollment._id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                     <p className="text-xs text-gray-500 font-mono">{enrollment.courseId.code}</p>
                     <h3 className="font-semibold text-gray-900 mt-1">{enrollment.courseId.title}</h3>
+                    <p className="text-xs text-blue-600 mt-1">
+                      Instructor: {enrollment.instructorId?.name || 'Unknown'}
+                    </p>
                     <div className="mt-3">
                       <div className="flex justify-between text-xs mb-1">
                         <span className="text-gray-500">Progress</span>
@@ -116,7 +132,7 @@ const StudentDashboard = () => {
           </div>
         </div>
 
-        {/* Upcoming Deadlines */}
+        {/* Upcoming Deadlines - Now clickable */}
         {upcomingAssignments.length > 0 && (
           <div className="card">
             <div className="p-4 border-b border-gray-200">
@@ -124,13 +140,17 @@ const StudentDashboard = () => {
             </div>
             <div className="p-4 space-y-2">
               {upcomingAssignments.map((assignment) => (
-                <div key={assignment._id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <Link
+                  key={assignment._id}
+                  to={`/student/courses/${assignment.course?._id}/assignments/${assignment._id}`}
+                  className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
                   <div>
                     <p className="font-medium text-sm text-gray-900">{assignment.title}</p>
                     <p className="text-xs text-gray-500">{assignment.course?.title}</p>
                   </div>
                   <p className="text-sm text-gray-700">{new Date(assignment.dueDate).toLocaleDateString()}</p>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -149,14 +169,70 @@ const StudentDashboard = () => {
                     <p className="text-xs text-gray-500 font-mono">{course.code}</p>
                     <h3 className="font-semibold text-gray-900 mt-1">{course.title}</h3>
                     <p className="text-sm text-gray-500 mt-1 line-clamp-2">{course.description}</p>
+                    <p className="text-xs text-blue-600 mt-2">
+                      {course.instructors?.length} instructor(s) available
+                    </p>
                     <button
-                      onClick={() => handleEnroll(course._id)}
+                      onClick={() => handleEnrollClick(course)}
                       className="btn btn-secondary btn-sm mt-3"
                     >
                       Enroll
                     </button>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Enrollment Modal */}
+        {enrollModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Enroll in {enrollModal.title}</h3>
+              <p className="text-sm text-gray-500 mb-4">Select an instructor to enroll with:</p>
+
+              <div className="space-y-2 mb-4">
+                {enrollModal.instructors.map((instructor) => (
+                  <label
+                    key={instructor._id}
+                    className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${selectedInstructor === instructor._id
+                        ? 'border-gray-900 bg-gray-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                  >
+                    <input
+                      type="radio"
+                      name="instructor"
+                      value={instructor._id}
+                      checked={selectedInstructor === instructor._id}
+                      onChange={(e) => setSelectedInstructor(e.target.value)}
+                      className="hidden"
+                    />
+                    <div className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center text-sm font-medium">
+                      {instructor.name?.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{instructor.name}</p>
+                      <p className="text-xs text-gray-500">{instructor.email}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              <div className="flex gap-2">
+                <button onClick={handleEnroll} className="btn btn-primary flex-1">
+                  Confirm Enrollment
+                </button>
+                <button
+                  onClick={() => {
+                    setEnrollModal(null);
+                    setSelectedInstructor('');
+                  }}
+                  className="btn btn-secondary"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>

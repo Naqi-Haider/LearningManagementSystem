@@ -34,7 +34,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Admin Card */}
             <Link
-              to="/login"
+              to="/login/admin"
               className="card p-6 hover:border-gray-900 hover:shadow-lg transition-all text-center group"
             >
               <div className="w-16 h-16 rounded-full bg-gray-100 group-hover:bg-gray-900 flex items-center justify-center mb-4 mx-auto transition-colors">
@@ -51,7 +51,7 @@ const LandingPage = () => {
 
             {/* Instructor Card */}
             <Link
-              to="/login"
+              to="/login/instructor"
               className="card p-6 hover:border-gray-900 hover:shadow-lg transition-all text-center group"
             >
               <div className="w-16 h-16 rounded-full bg-gray-100 group-hover:bg-gray-900 flex items-center justify-center mb-4 mx-auto transition-colors">
@@ -67,7 +67,7 @@ const LandingPage = () => {
 
             {/* Student Card */}
             <Link
-              to="/login"
+              to="/login/student"
               className="card p-6 hover:border-gray-900 hover:shadow-lg transition-all text-center group"
             >
               <div className="w-16 h-16 rounded-full bg-gray-100 group-hover:bg-gray-900 flex items-center justify-center mb-4 mx-auto transition-colors">
@@ -87,7 +87,7 @@ const LandingPage = () => {
       {/* Footer */}
       <footer className="bg-gray-900 py-6 text-center">
         <p className="text-sm text-gray-400">
-          © 2024 Learning Management System. All rights reserved.
+          © 2026 Learning Management System. All rights reserved.
         </p>
       </footer>
     </div>

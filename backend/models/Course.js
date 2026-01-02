@@ -1,5 +1,17 @@
 const mongoose = require('mongoose');
 
+const instructorSectionSchema = new mongoose.Schema({
+  instructor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  section: {
+    type: String,
+    required: true,
+  },
+}, { _id: false });
+
 const courseSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -18,6 +30,8 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
+  instructorSections: [instructorSectionSchema],
+  // Keep instructors array for backward compatibility
   instructors: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

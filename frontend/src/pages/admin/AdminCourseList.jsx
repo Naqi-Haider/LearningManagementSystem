@@ -22,6 +22,18 @@ const AdminCourseList = () => {
     }
   };
 
+  const handleDelete = async (courseId) => {
+    if (!confirm('Are you sure you want to delete this course? This will also delete all related lessons, assignments, and enrollments.')) {
+      return;
+    }
+    try {
+      await courseService.deleteCourse(courseId);
+      fetchCourses();
+    } catch (error) {
+      alert('Failed to delete course');
+    }
+  };
+
   if (loading) {
     return (
       <MainLayout>
@@ -76,9 +88,17 @@ const AdminCourseList = () => {
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">{course.students?.length || 0}</td>
                       <td className="px-4 py-3">
-                        <Link to={`/admin/courses/${course._id}`} className="text-gray-900 hover:underline text-sm font-medium">
-                          View Details
-                        </Link>
+                        <div className="flex gap-3">
+                          <Link to={`/admin/courses/${course._id}`} className="text-gray-900 hover:underline text-sm font-medium">
+                            View
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(course._id)}
+                            className="text-red-600 hover:text-red-800 text-sm font-medium"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -93,3 +113,4 @@ const AdminCourseList = () => {
 };
 
 export default AdminCourseList;
+

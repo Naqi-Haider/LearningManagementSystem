@@ -1,12 +1,19 @@
 const Assignment = require('../models/Assignment');
 const Submission = require('../models/Submission');
 
-// @desc    Get assignments for a course
-// @route   GET /api/assignments/:courseId
+// @desc    Get assignments for a course (optionally filter by instructor)
+// @route   GET /api/assignments/:courseId?instructor=instructorId
 // @access  Private
 const getAssignments = async (req, res) => {
   try {
-    const assignments = await Assignment.find({ courseId: req.params.courseId })
+    const query = { courseId: req.params.courseId };
+
+    // Filter by instructor if provided
+    if (req.query.instructor) {
+      query.createdBy = req.query.instructor;
+    }
+
+    const assignments = await Assignment.find(query)
       .populate('createdBy', 'name email')
       .sort('-createdAt');
     res.json(assignments);
