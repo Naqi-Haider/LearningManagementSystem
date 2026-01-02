@@ -20,7 +20,8 @@ const getCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id)
       .populate('instructors', 'name email')
-      .populate('students', 'name email');
+      .populate('students', 'name email')
+      .populate('instructorSections.instructor', 'name email');
 
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
@@ -117,15 +118,25 @@ const joinCourse = async (req, res) => {
       return res.status(400).json({ message: 'Capacity Reached' });
     }
 
-    // Generate unique section v1-v10
-    const usedSections = course.instructorSections?.map(s => s.section) || [];
+    // Assign a random unique section (v1-v10)
     const allSections = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10'];
+    const usedSections = course.instructorSections?.map(s => s.section) || [];
     const availableSections = allSections.filter(s => !usedSections.includes(s));
-    const randomSection = availableSections[Math.floor(Math.random() * availableSections.length)] || `v${course.instructors.length + 1}`;
+
+    if (availableSections.length === 0) {
+      return res.status(400).json({ message: 'No available sections' });
+    }
+
+    const randomSection = availableSections[Math.floor(Math.random() * availableSections.length)];
 
     course.instructors.push(req.user._id);
-    course.instructorSections = course.instructorSections || [];
-    course.instructorSections.push({ instructor: req.user._id, section: randomSection });
+    if (!course.instructorSections) {
+      course.instructorSections = [];
+    }
+    course.instructorSections.push({
+      instructor: req.user._id,
+      section: randomSection,
+    });
     await course.save();
 
     res.json({ ...course.toObject(), assignedSection: randomSection });

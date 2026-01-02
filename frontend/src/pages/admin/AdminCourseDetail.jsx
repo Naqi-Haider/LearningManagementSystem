@@ -88,23 +88,26 @@ const AdminCourseDetail = () => {
         </div>
 
         {/* Instructor Tabs */}
-        {course?.instructors?.length > 0 ? (
+        {course?.instructorSections?.length > 0 ? (
           <>
             <div className="card">
               <div className="p-4 border-b border-gray-200">
                 <h2 className="font-semibold text-gray-900">Select Instructor to View Content</h2>
               </div>
               <div className="p-4 flex flex-wrap gap-2">
-                {course.instructors.map((instructor) => (
+                {course.instructorSections.map((is) => (
                   <button
-                    key={instructor._id}
-                    onClick={() => setSelectedInstructor(instructor)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedInstructor?._id === instructor._id
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    key={is.instructor._id}
+                    onClick={() => setSelectedInstructor(is.instructor)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${selectedInstructor?._id === is.instructor._id
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                   >
-                    {instructor.name}
+                    {is.instructor.name}
+                    <span className={`px-2 py-0.5 text-xs rounded ${selectedInstructor?._id === is.instructor._id ? 'bg-white text-gray-900' : 'bg-blue-100 text-blue-800'}`}>
+                      {is.section.toUpperCase()}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -115,7 +118,7 @@ const AdminCourseDetail = () => {
               <div className="space-y-6">
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-blue-800 font-medium">
-                    Viewing content from: {selectedInstructor.name} ({selectedInstructor.email})
+                    Viewing content from: {selectedInstructor.name} ({selectedInstructor.email}) - Section {course.instructorSections.find(s => s.instructor._id === selectedInstructor._id)?.section?.toUpperCase()}
                   </p>
                 </div>
 

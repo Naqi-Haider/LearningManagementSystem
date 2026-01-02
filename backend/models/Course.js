@@ -1,17 +1,5 @@
 const mongoose = require('mongoose');
 
-const instructorSectionSchema = new mongoose.Schema({
-  instructor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  section: {
-    type: String,
-    required: true,
-  },
-}, { _id: false });
-
 const courseSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -30,11 +18,20 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
-  instructorSections: [instructorSectionSchema],
-  // Keep instructors array for backward compatibility
   instructors: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+  }],
+  // Sections map: instructorId -> section (v1-v10)
+  instructorSections: [{
+    instructor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    section: {
+      type: String,
+      required: true,
+    },
   }],
   students: [{
     type: mongoose.Schema.Types.ObjectId,

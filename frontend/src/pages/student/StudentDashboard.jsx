@@ -193,29 +193,32 @@ const StudentDashboard = () => {
               <p className="text-sm text-gray-500 mb-4">Select an instructor to enroll with:</p>
 
               <div className="space-y-2 mb-4">
-                {enrollModal.instructors.map((instructor) => (
+                {enrollModal.instructorSections?.map((is) => (
                   <label
-                    key={instructor._id}
-                    className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${selectedInstructor === instructor._id
-                        ? 'border-gray-900 bg-gray-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                    key={is.instructor._id}
+                    className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${selectedInstructor === is.instructor._id
+                      ? 'border-gray-900 bg-gray-50'
+                      : 'border-gray-200 hover:border-gray-300'
                       }`}
                   >
                     <input
                       type="radio"
                       name="instructor"
-                      value={instructor._id}
-                      checked={selectedInstructor === instructor._id}
+                      value={is.instructor._id}
+                      checked={selectedInstructor === is.instructor._id}
                       onChange={(e) => setSelectedInstructor(e.target.value)}
                       className="hidden"
                     />
                     <div className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center text-sm font-medium">
-                      {instructor.name?.charAt(0).toUpperCase()}
+                      {is.instructor.name?.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{instructor.name}</p>
-                      <p className="text-xs text-gray-500">{instructor.email}</p>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{is.instructor.name}</p>
+                      <p className="text-xs text-gray-500">{is.instructor.email}</p>
                     </div>
+                    <span className="px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
+                      Section {is.section.toUpperCase()}
+                    </span>
                   </label>
                 ))}
               </div>
