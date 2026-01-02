@@ -6,11 +6,12 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Add token to requests
+// Add user ID to requests (simple auth without JWT)
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const user = localStorage.getItem('user');
+  if (user) {
+    const userData = JSON.parse(user);
+    config.headers['x-user-id'] = userData._id;
   }
   return config;
 });

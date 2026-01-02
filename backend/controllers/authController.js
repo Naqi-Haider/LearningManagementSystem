@@ -1,10 +1,4 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-
-// Generate JWT Token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-};
 
 // @desc    Register new user
 // @route   POST /api/auth/register
@@ -25,7 +19,6 @@ const register = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
-      token: generateToken(user._id),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -44,7 +37,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'User not found' });
     }
 
-    const isPasswordValid = await user.comparePassword(password);
+    const isPasswordValid = user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid password' });
     }
@@ -55,7 +48,6 @@ const login = async (req, res) => {
       email: user.email,
       role: user.role,
       profileImage: user.profileImage,
-      token: generateToken(user._id),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -90,7 +82,6 @@ const updateProfile = async (req, res) => {
 
     // Handle profile image upload from Cloudinary
     if (req.file) {
-      // multer-storage-cloudinary provides the URL in req.file.path
       user.profileImage = req.file.path;
     }
 
@@ -110,4 +101,3 @@ const updateProfile = async (req, res) => {
 };
 
 module.exports = { register, login, getProfile, updateProfile };
-

@@ -1,9 +1,7 @@
 const Assignment = require('../models/Assignment');
 const Submission = require('../models/Submission');
 
-// @desc    Get assignments for a course (optionally filter by instructor)
-// @route   GET /api/assignments/:courseId?instructor=instructorId
-// @access  Private
+//Read Request:
 const getAssignments = async (req, res) => {
   try {
     const query = { courseId: req.params.courseId };
@@ -22,9 +20,7 @@ const getAssignments = async (req, res) => {
   }
 };
 
-// @desc    Create new assignment
-// @route   POST /api/assignments
-// @access  Instructor only
+//Create Request:
 const createAssignment = async (req, res) => {
   try {
     const { courseId, title, description, dueDate } = req.body;
