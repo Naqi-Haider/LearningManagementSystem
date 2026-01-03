@@ -1,8 +1,8 @@
-const Course = require('../models/Course');
-const Enrollment = require('../models/Enrollment');
+import Course from '../models/Course.js';
+import Enrollment from '../models/Enrollment.js';
 
 //Read Request:
-const getCourses = async (req, res) => {
+export const getCourses = async (req, res) => {
   try {
     const courses = await Course.find().populate('instructors', 'name email');
     res.json(courses);
@@ -13,7 +13,7 @@ const getCourses = async (req, res) => {
 
 //Read Request: SINGLE COURSE
 //GET api: /courses/:id
-const getCourse = async (req, res) => {
+export const getCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id)
       .populate('instructors', 'name email')
@@ -32,7 +32,7 @@ const getCourse = async (req, res) => {
 
 //Create Request: NEW COURSE
 //POST api: /courses
-const createCourse = async (req, res) => {
+export const createCourse = async (req, res) => {
   try {
     const { title, description, code, instructorLimit } = req.body;
 
@@ -56,7 +56,7 @@ const createCourse = async (req, res) => {
 
 //Update Request:
 //PUT api: /courses/:id
-const updateCourse = async (req, res) => {
+export const updateCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
 
@@ -78,7 +78,7 @@ const updateCourse = async (req, res) => {
 
 //Delete Request:
 //DELETE api: /courses/:id
-const deleteCourse = async (req, res) => {
+export const deleteCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
 
@@ -95,7 +95,7 @@ const deleteCourse = async (req, res) => {
 
 //Instructor joins course
 //PUT api: /courses/:id/join
-const joinCourse = async (req, res) => {
+export const joinCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
 
@@ -141,7 +141,7 @@ const joinCourse = async (req, res) => {
 
 //Student enrolls in course with specific instructor
 //PUT api: /courses/:id/enroll
-const enrollCourse = async (req, res) => {
+export const enrollCourse = async (req, res) => {
   try {
     const { instructorId } = req.body;
     const course = await Course.findById(req.params.id);
@@ -182,14 +182,4 @@ const enrollCourse = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-module.exports = {
-  getCourses,
-  getCourse,
-  createCourse,
-  updateCourse,
-  deleteCourse,
-  joinCourse,
-  enrollCourse,
 };

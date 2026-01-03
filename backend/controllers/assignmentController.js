@@ -1,8 +1,8 @@
-const Assignment = require('../models/Assignment');
-const Submission = require('../models/Submission');
+import Assignment from '../models/Assignment.js';
+import Submission from '../models/Submission.js';
 
 //Read Request:
-const getAssignments = async (req, res) => {
+export const getAssignments = async (req, res) => {
   try {
     const query = { courseId: req.params.courseId };
 
@@ -21,7 +21,7 @@ const getAssignments = async (req, res) => {
 };
 
 //Create Request:
-const createAssignment = async (req, res) => {
+export const createAssignment = async (req, res) => {
   try {
     const { courseId, title, description, dueDate } = req.body;
 
@@ -39,10 +39,9 @@ const createAssignment = async (req, res) => {
   }
 };
 
-
 //Update Request:
 //PUT api: /assignments/:id
-const updateAssignment = async (req, res) => {
+export const updateAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
 
@@ -64,7 +63,7 @@ const updateAssignment = async (req, res) => {
 
 //Delete Request:
 //DELETE api: /assignments/:id
-const deleteAssignment = async (req, res) => {
+export const deleteAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
 
@@ -81,7 +80,7 @@ const deleteAssignment = async (req, res) => {
 
 //Create Request:
 //POST api: /assignments/:id/submit
-const submitAssignment = async (req, res) => {
+export const submitAssignment = async (req, res) => {
   try {
     const { content } = req.body;
 
@@ -108,7 +107,7 @@ const submitAssignment = async (req, res) => {
 
 //Read Request:
 //GET api: /assignments/:id/submissions
-const getSubmissions = async (req, res) => {
+export const getSubmissions = async (req, res) => {
   try {
     const submissions = await Submission.find({ assignmentId: req.params.id })
       .populate('studentId', 'name email');
@@ -116,13 +115,4 @@ const getSubmissions = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-module.exports = {
-  getAssignments,
-  createAssignment,
-  updateAssignment,
-  deleteAssignment,
-  submitAssignment,
-  getSubmissions,
 };

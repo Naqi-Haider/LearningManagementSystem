@@ -1,8 +1,8 @@
-const Lesson = require('../models/Lesson');
-const Enrollment = require('../models/Enrollment');
+import Lesson from '../models/Lesson.js';
+import Enrollment from '../models/Enrollment.js';
 
 ///Read Request:
-const getLessons = async (req, res) => {
+export const getLessons = async (req, res) => {
   try {
     const query = { courseId: req.params.courseId };
 
@@ -21,7 +21,7 @@ const getLessons = async (req, res) => {
 };
 
 //Create Request:
-const createLesson = async (req, res) => {
+export const createLesson = async (req, res) => {
   try {
     const { courseId, title, content, sequenceOrder } = req.body;
 
@@ -40,7 +40,7 @@ const createLesson = async (req, res) => {
 };
 
 //Update Request:
-const updateLesson = async (req, res) => {
+export const updateLesson = async (req, res) => {
   try {
     const lesson = await Lesson.findById(req.params.id);
 
@@ -66,7 +66,7 @@ const updateLesson = async (req, res) => {
 };
 
 //Delete Request:
-const deleteLesson = async (req, res) => {
+export const deleteLesson = async (req, res) => {
   try {
     const lesson = await Lesson.findById(req.params.id);
 
@@ -88,7 +88,7 @@ const deleteLesson = async (req, res) => {
 
 //Complete Request:
 //PUT api: /lessons/:id/complete
-const completeLesson = async (req, res) => {
+export const completeLesson = async (req, res) => {
   try {
     const { courseId } = req.body;
 
@@ -118,12 +118,4 @@ const completeLesson = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-module.exports = {
-  getLessons,
-  createLesson,
-  updateLesson,
-  deleteLesson,
-  completeLesson,
 };

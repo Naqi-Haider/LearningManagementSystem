@@ -1,7 +1,7 @@
-const User = require('../models/User');
+import User from '../models/User.js';
 
 // Simple auth middleware - uses userId from header
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     const userId = req.headers['x-user-id'];
 
@@ -21,7 +21,7 @@ const protect = async (req, res, next) => {
   }
 };
 
-const authorize = (...roles) => {
+export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: `User role ${req.user.role} is not authorized` });
@@ -29,5 +29,3 @@ const authorize = (...roles) => {
     next();
   };
 };
-
-module.exports = { protect, authorize };

@@ -1,5 +1,5 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
   getCourses,
   getCourse,
   createCourse,
@@ -7,8 +7,8 @@ const {
   deleteCourse,
   joinCourse,
   enrollCourse,
-} = require('../controllers/courseController');
-const { protect, authorize } = require('../middleware/auth');
+} from '../controllers/courseController.js';
+import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -20,4 +20,4 @@ router.delete('/:id', protect, authorize('admin'), deleteCourse);
 router.put('/:id/join', protect, authorize('instructor'), joinCourse);
 router.put('/:id/enroll', protect, authorize('student'), enrollCourse);
 
-module.exports = router;
+export default router;

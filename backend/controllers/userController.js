@@ -1,7 +1,7 @@
-const User = require('../models/User');
+import User from '../models/User.js';
 
 //Create Request:
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password');
     res.json(users);
@@ -11,7 +11,7 @@ const getAllUsers = async (req, res) => {
 };
 
 //Read Request:
-const getUsersByRole = async (req, res) => {
+export const getUsersByRole = async (req, res) => {
   try {
     const { role } = req.params;
     const users = await User.find({ role }).select('-password');
@@ -22,7 +22,7 @@ const getUsersByRole = async (req, res) => {
 };
 
 //Delete Request:
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
@@ -33,5 +33,3 @@ const deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-module.exports = { getAllUsers, getUsersByRole, deleteUser };

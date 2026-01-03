@@ -1,13 +1,13 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
   getAssignments,
   createAssignment,
   updateAssignment,
   deleteAssignment,
   submitAssignment,
   getSubmissions,
-} = require('../controllers/assignmentController');
-const { protect, authorize } = require('../middleware/auth');
+} from '../controllers/assignmentController.js';
+import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -18,4 +18,4 @@ router.delete('/:id', protect, authorize('instructor'), deleteAssignment);
 router.post('/:id/submit', protect, authorize('student'), submitAssignment);
 router.get('/:id/submissions', protect, authorize('instructor'), getSubmissions);
 
-module.exports = router;
+export default router;

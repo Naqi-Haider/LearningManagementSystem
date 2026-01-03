@@ -1,8 +1,8 @@
-const User = require('../models/User');
+import User from '../models/User.js';
 
 //Create Request: NEW USER
 //POST api: /auth/register
-const register = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
@@ -26,7 +26,7 @@ const register = async (req, res) => {
 
 //Read Request: SINGLE USER
 //POST api: /auth/login
-const login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -54,7 +54,7 @@ const login = async (req, res) => {
 
 //Read Request: SINGLE USER
 //GET api: /auth/profile
-const getProfile = async (req, res) => {
+export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');
     res.json(user);
@@ -65,7 +65,7 @@ const getProfile = async (req, res) => {
 
 //Update Request: SINGLE USER
 //PUT api: /auth/profile
-const updateProfile = async (req, res) => {
+export const updateProfile = async (req, res) => {
   try {
     const { name } = req.body;
     const user = await User.findById(req.user._id);
@@ -95,5 +95,3 @@ const updateProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-module.exports = { register, login, getProfile, updateProfile };

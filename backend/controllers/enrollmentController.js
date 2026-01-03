@@ -1,8 +1,8 @@
-const Enrollment = require('../models/Enrollment');
-const Course = require('../models/Course');
+import Enrollment from '../models/Enrollment.js';
+import Course from '../models/Course.js';
 
 //Read Request: ALL ENROLLMENTS
-const getEnrollments = async (req, res) => {
+export const getEnrollments = async (req, res) => {
   try {
     const enrollments = await Enrollment.find({ studentId: req.user._id })
       .populate('courseId', 'title description code')
@@ -14,7 +14,7 @@ const getEnrollments = async (req, res) => {
 };
 
 //Read Request: SINGLE ENROLLMENT
-const getEnrollment = async (req, res) => {
+export const getEnrollment = async (req, res) => {
   try {
     const enrollment = await Enrollment.findOne({
       studentId: req.user._id,
@@ -35,7 +35,7 @@ const getEnrollment = async (req, res) => {
 };
 
 //Read Request: ALL STUDENTS ENROLLED WITH A SPECIFIC INSTRUCTOR FOR A COURSE
-const getStudentsByInstructor = async (req, res) => {
+export const getStudentsByInstructor = async (req, res) => {
   try {
     const { courseId, instructorId } = req.params;
 
@@ -49,10 +49,4 @@ const getStudentsByInstructor = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-module.exports = {
-  getEnrollments,
-  getEnrollment,
-  getStudentsByInstructor,
 };
