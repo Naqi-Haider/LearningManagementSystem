@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { registerUser, clearError } from '../redux/slices/authSlice';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,10 +10,14 @@ const Register = () => {
     password: '',
     role: 'student',
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
+  const [localError, setLocalError] = useState('');
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,11 +25,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setLocalError('');
 
     try {
-      const data = await register(formData);
+      const data = await dispatch(registerUser(formData)).unwrap();
 
       if (data.role === 'admin') {
         navigate('/admin');
@@ -34,11 +38,11 @@ const Register = () => {
         navigate('/student');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
-    } finally {
-      setLoading(false);
+      setLocalError(err);
     }
   };
+
+  const displayError = localError || error;
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -56,9 +60,9 @@ const Register = () => {
             <h2 className="text-2xl font-bold text-center text-gray-900 mb-2">Create Account</h2>
             <p className="text-center text-gray-500 mb-6">Join the learning platform</p>
 
-            {error && (
+            {displayError && (
               <div className="alert alert-error mb-4">
-                {error}
+                {displayError}
               </div>
             )}
 

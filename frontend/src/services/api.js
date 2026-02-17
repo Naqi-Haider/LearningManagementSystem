@@ -6,12 +6,11 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Add user ID to requests (simple auth without JWT)
+// Add JWT Bearer token to requests
 api.interceptors.request.use((config) => {
-  const user = localStorage.getItem('user');
-  if (user) {
-    const userData = JSON.parse(user);
-    config.headers['x-user-id'] = userData._id;
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -71,6 +70,9 @@ export const enrollmentService = {
 export const userService = {
   getAllUsers: () => api.get('/users'),
   getUsersByRole: (role) => api.get(`/users/role/${role}`),
+  getUser: (id) => api.get(`/users/${id}`),
+  createUser: (userData) => api.post('/users', userData),
+  updateUser: (id, userData) => api.put(`/users/${id}`, userData),
   deleteUser: (id) => api.delete(`/users/${id}`),
 };
 

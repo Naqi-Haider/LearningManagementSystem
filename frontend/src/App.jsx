@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { useSelector } from 'react-redux';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Public Pages
@@ -28,7 +28,7 @@ import StudentProfile from './pages/student/StudentProfile';
 import AssignmentDetail from './pages/student/AssignmentDetail';
 
 const RoleRedirect = () => {
-  const { user, loading } = useAuth();
+  const { user, loading } = useSelector((state) => state.auth);
 
   if (loading) {
     return (
@@ -52,134 +52,132 @@ const RoleRedirect = () => {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/login/:role" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<RoleRedirect />} />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/login/:role" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<RoleRedirect />} />
 
-          {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/courses"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminCourseList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/courses/new"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <CreateCourse />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/courses/:id"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminCourseDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/profile"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminUserPanel />
-              </ProtectedRoute>
-            }
-          />
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/courses"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminCourseList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/courses/new"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <CreateCourse />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/courses/:id"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminCourseDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/profile"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminUserPanel />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Instructor Routes */}
-          <Route
-            path="/instructor"
-            element={
-              <ProtectedRoute allowedRoles={['instructor']}>
-                <InstructorDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/instructor/available"
-            element={
-              <ProtectedRoute allowedRoles={['instructor']}>
-                <AvailableCourses />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/instructor/courses/:id"
-            element={
-              <ProtectedRoute allowedRoles={['instructor']}>
-                <ManageCourse />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/instructor/profile"
-            element={
-              <ProtectedRoute allowedRoles={['instructor']}>
-                <InstructorProfile />
-              </ProtectedRoute>
-            }
-          />
+        {/* Instructor Routes */}
+        <Route
+          path="/instructor"
+          element={
+            <ProtectedRoute allowedRoles={['instructor']}>
+              <InstructorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/available"
+          element={
+            <ProtectedRoute allowedRoles={['instructor']}>
+              <AvailableCourses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/courses/:id"
+          element={
+            <ProtectedRoute allowedRoles={['instructor']}>
+              <ManageCourse />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/profile"
+          element={
+            <ProtectedRoute allowedRoles={['instructor']}>
+              <InstructorProfile />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Student Routes */}
-          <Route
-            path="/student"
-            element={
-              <ProtectedRoute allowedRoles={['student']}>
-                <StudentDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/student/courses/:id"
-            element={
-              <ProtectedRoute allowedRoles={['student']}>
-                <CourseView />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/student/courses/:courseId/assignments/:assignmentId"
-            element={
-              <ProtectedRoute allowedRoles={['student']}>
-                <AssignmentDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/student/profile"
-            element={
-              <ProtectedRoute allowedRoles={['student']}>
-                <StudentProfile />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </AuthProvider>
+        {/* Student Routes */}
+        <Route
+          path="/student"
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/courses/:id"
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <CourseView />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/courses/:courseId/assignments/:assignmentId"
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <AssignmentDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/profile"
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <StudentProfile />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </Router>
   );
 }

@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import MainLayout from '../../components/MainLayout';
 import { courseService, lessonService, assignmentService, enrollmentService } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
 
 const ManageCourse = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
   const [course, setCourse] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [assignments, setAssignments] = useState([]);

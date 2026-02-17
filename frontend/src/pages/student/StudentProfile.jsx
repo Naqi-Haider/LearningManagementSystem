@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import MainLayout from '../../components/MainLayout';
-import { useAuth } from '../../context/AuthContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slices/authSlice';
 import { enrollmentService } from '../../services/api';
 import api from '../../services/api';
 
 const StudentProfile = () => {
-  const { user, setUser } = useAuth();
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -56,7 +58,7 @@ const StudentProfile = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      setUser({ ...user, name: data.name, profileImage: data.profileImage });
+      dispatch(setUser({ ...user, name: data.name, profileImage: data.profileImage }));
       setEditing(false);
       setSelectedImage(null);
       setImagePreview(null);

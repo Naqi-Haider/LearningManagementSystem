@@ -1,8 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import MainLayout from '../../components/MainLayout';
 import { courseService } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
 
 const AvailableCourses = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
   const [availableCourses, setAvailableCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 

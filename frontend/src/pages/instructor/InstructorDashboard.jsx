@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MainLayout from '../../components/MainLayout';
 import { courseService } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
 
 const InstructorDashboard = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
   const [myCourses, setMyCourses] = useState([]);
   const [availableCourses, setAvailableCourses] = useState([]);
   const [loading, setLoading] = useState(true);

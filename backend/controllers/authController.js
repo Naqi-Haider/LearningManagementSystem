@@ -1,4 +1,10 @@
 import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
+
+// Generate JWT Token
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+};
 
 //Create Request: NEW USER
 //POST api: /auth/register
@@ -18,6 +24,7 @@ export const register = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      token: generateToken(user._id),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -35,7 +42,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'User not found' });
     }
 
-    const isPasswordValid = user.comparePassword(password);
+    const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid password' });
     }
@@ -46,6 +53,7 @@ export const login = async (req, res) => {
       email: user.email,
       role: user.role,
       profileImage: user.profileImage,
+      token: generateToken(user._id),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -89,6 +97,7 @@ export const updateProfile = async (req, res) => {
       email: user.email,
       role: user.role,
       profileImage: user.profileImage,
+      token: generateToken(user._id),
     });
   } catch (error) {
     console.error('Profile update error:', error);

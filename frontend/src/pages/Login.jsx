@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { loginUser, clearError } from '../redux/slices/authSlice';
 
 const Login = () => {
   const { role } = useParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
+  const [localError, setLocalError] = useState('');
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   // Determine heading based on role parameter
   const roleConfig = {
@@ -22,19 +27,16 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setLocalError('');
 
     try {
-      const data = await login({ email, password });
+      const data = await dispatch(loginUser({ email, password })).unwrap();
 
       // If a specific role was requested via URL, validate it matches
       if (role && data.role !== role) {
-        // Logout the user since wrong role
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        setError(`Invalid credentials. This login is for ${role}s only.`);
-        setLoading(false);
+        setLocalError(`Invalid credentials. This login is for ${role}s only.`);
         return;
       }
 
@@ -46,11 +48,11 @@ const Login = () => {
         navigate('/student');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
+      setLocalError(err);
     }
   };
+
+  const displayError = localError || error;
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -68,9 +70,9 @@ const Login = () => {
             <h2 className="text-2xl font-bold text-center text-gray-900 mb-2">{config.title}</h2>
             <p className="text-center text-gray-500 mb-6">{config.subtitle}</p>
 
-            {error && (
+            {displayError && (
               <div className="alert alert-error mb-4">
-                {error}
+                {displayError}
               </div>
             )}
 

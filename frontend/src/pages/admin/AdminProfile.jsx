@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
 import MainLayout from '../../components/MainLayout';
-import { useAuth } from '../../context/AuthContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slices/authSlice';
 import api from '../../services/api';
 
 const AdminProfile = () => {
-  const { user, setUser } = useAuth();
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ name: user?.name || '' });
   const [selectedImage, setSelectedImage] = useState(null);
@@ -35,7 +37,7 @@ const AdminProfile = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      setUser({ ...user, name: data.name, profileImage: data.profileImage });
+      dispatch(setUser({ ...user, name: data.name, profileImage: data.profileImage }));
       setEditing(false);
       setSelectedImage(null);
       setImagePreview(null);
